@@ -1,0 +1,23 @@
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <ng-container *ngIf="!mostrarHistoriaPaciente">
+            <h3 class="display-6">Seleccione el paciente a buscar historia medica</h3>
+
+            <div *ngIf="pacientes.length > 0" class="list-group list-group-flush ">
+                <div *ngFor="let elemento of pacientes"
+                    class="list-group-item list-group-item-action list-group-item-light" (click)="seleccionarPaciente(elemento);">
+                    {{elemento.nombre+' '+elemento.apellido+' DNI: '+elemento.dni}}
+                </div>
+            </div>
+    
+            <!-- Mensaje si no hay resultados -->
+            <div *ngIf="pacientes.length === 0" class="alert alert-warning mt-3">
+                Aun no atendio ningun paciente.
+            </div>
+        </ng-container>
+        <ng-container *ngIf="mostrarHistoriaPaciente">
+            <app-historia-clinica [paciente]="pacienteSeleccionado"></app-historia-clinica>
+        </ng-container>
+      
+    </div>
+</div>

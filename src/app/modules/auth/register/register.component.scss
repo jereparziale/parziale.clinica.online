@@ -1,0 +1,25 @@
+.botonimagen{
+    background-repeat:no-repeat;
+    background-position: center;
+    background-size: cover;
+    height:350px;
+    width:350px;
+    background-position:center;
+    transition: opacity 0.2s ease-in-out;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.imagenEspecialidad{
+    background-image:url(../../../../assets/especialidad.jpg);
+}
+.imagenProfesional{
+    background-image:url(../../../../assets/profesional.jpg);
+}
+.imagenPaciente{
+    background-image:url(../../../../assets/paciente.jpg);
+}
+
+.botonimagen:hover {
+  opacity: 0.7;
+}

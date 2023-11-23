@@ -1,0 +1,7 @@
+<div class="form-control-group col-5 mt-4">
+  <img [src]="imagenSeleccionada" alt="Captcha Image" />
+    <br />
+    <label class="form-label">Ingrese el texto de la imagen</label>
+    <input type="text" class="form-control"  [(ngModel)]="respuestaUsuario">
+    <button type="button" class="btn btn-outline-dark mt-2" (click)="verificarCaptcha()">Verificar</button>
+  </div>

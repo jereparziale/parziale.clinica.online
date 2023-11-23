@@ -1,0 +1,135 @@
+<div class="container">
+    <div class="card p-4 mt-4 border border-dark border-5" style="border-radius: 1rem;">
+        <div class="d-flex align-items-center text-center mb-3 pb-1">
+            <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+            <span class="display-4 fw-bold mb-0">Cargar Datos de Atencion</span>
+        </div>
+        <form [formGroup]="historialForm" (ngSubmit)="guardarHistorial()">
+            <div class="row">
+                <div class="form-control-group col-5">
+                    <label class="form-label" for="altura">Altura (cm)</label>
+                    <input type="number" id="altura" formControlName="altura" class="form-control">
+                    <ng-container *ngIf="historialForm.get('altura')?.hasError('max')">
+                        <small class="text-danger">
+                            Altura invalida.
+                        </small>
+                    </ng-container>
+                    <ng-container *ngIf="historialForm.get('altura')?.hasError('min')">
+                        <small class="text-danger">
+                            La altura debe ser mayor o igual a 10 cm.
+                        </small>
+                    </ng-container>
+                </div>
+                <div class="form-control-group col-5">
+
+                    <label class="form-label" for="peso">Peso (kg)</label>
+                    <input type="number" id="peso" formControlName="peso" class="form-control">
+                    <ng-container *ngIf="historialForm.get('peso')?.hasError('max')">
+                        <small class="text-danger">
+                            Peso invalido.
+                        </small>
+                    </ng-container>
+                    <ng-container *ngIf="historialForm.get('peso')?.hasError('min')">
+                        <small class="text-danger">
+                            El peso debe ser mayor o igual a 1 kg.
+                        </small>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-control-group col-5">
+
+                    <label class="form-label" for="temperatura">Temperatura (C°)</label>
+                    <input type="number" id="temperatura" formControlName="temperatura" class="form-control">
+                    <ng-container *ngIf="historialForm.get('temperatura')?.hasError('max')">
+                        <small class="text-danger">
+                            Temperatura invalida.
+                        </small>
+                    </ng-container>
+                    <ng-container *ngIf="historialForm.get('temperatura')?.hasError('min')">
+                        <small class="text-danger">
+                            El temperatura debe ser mayor o igual a 30 grados.
+                        </small>
+                    </ng-container>
+                </div>
+                <div class="form-control-group col-5">
+                    <div class="row">
+
+                        <div class="form-control-group col-6">
+                            <label class="form-label" for="presionSistole">Presión Sistole (mmHg)</label>
+                            <input type="number" id="presionSistole" formControlName="presionSistole"
+                                class="form-control">
+                            <ng-container *ngIf="historialForm.get('presionSistole')?.hasError('max')">
+                                <small class="text-danger">
+                                    Presion invalida.
+                                </small>
+                            </ng-container>
+                            <ng-container *ngIf="historialForm.get('presionSistole')?.hasError('min')">
+                                <small class="text-danger">
+                                    Presion invalida.
+                                </small>
+                            </ng-container>
+                        </div>
+                        <div class="form-control-group col-6">
+                            <label class="form-label" for="presionDiastole">Presión Diastole (mmHg)</label>
+                            <input type="number" id="presionDiastole" formControlName="presionDiastole"
+                                class="form-control">
+                            <ng-container *ngIf="historialForm.get('presionDiastole')?.hasError('max')">
+                                <small class="text-danger">
+                                    Presion invalida.
+                                </small>
+                            </ng-container>
+                            <ng-container *ngIf="historialForm.get('presionDiastole')?.hasError('min')">
+                                <small class="text-danger">
+                                    Presion invalida.
+                                </small>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngIf="datosDinamicos">
+                <div formArrayName="datosDinamicos">
+                    <div *ngFor="let dato of datosDinamicos.controls; let i = index" [formGroupName]="i">
+                        <div class="row">
+                            <div class="form-control-group col-5">
+
+                                <label class="form-label" for="clave">Descripcion</label>
+                                <input type="text" id="clave" formControlName="clave" class="form-control">
+                                <ng-container *ngIf="historialForm.get('clave')?.hasError('minlength')">
+                                    <small class="text-danger">
+                                        Debe contener mas caracteres.
+                                    </small>
+                                </ng-container>
+                            </div>
+                            <div class="form-control-group col-5">
+
+                                <label class="form-label" for="valor">Dato</label>
+                                <input type="text" id="valor" formControlName="valor" class="form-control">
+                                <ng-container *ngIf="historialForm.get('valor')?.hasError('minlength')">
+                                    <small class="text-danger">
+                                        Debe contener mas caracteres.
+                                    </small>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="historialForm.invalid">
+                <small class="text-danger">
+                    Todos los campos son obligatorios y deben tener el formato correcto.
+                </small>
+                <br>
+            </ng-container>
+
+            <ng-container *ngIf="datosAgregados<3">
+                <button type="button" class="btn btn-primary mt-4" (click)="agregarDatoDinamico()">Agregar Datos de
+                    Atencion</button>
+            </ng-container>
+
+            <button type="submit" class="btn btn-success mt-4">Guardar Historial</button>
+        </form>
+    </div>
+</div>

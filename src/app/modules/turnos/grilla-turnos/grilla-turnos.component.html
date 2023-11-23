@@ -1,0 +1,56 @@
+<!-- En tu componente HTML -->
+<div class="modal fade" id="modalConfirmarTurno" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="modalConfirmarTurnoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalConfirmarTurnoLabel">Detalles del Turno</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ng-container *ngIf="turnoSeleccionado && especialista else noTurno">
+                    <p>Día: {{ turnoSeleccionado.dia }}</p>
+                    <p>Horario: {{ turnoSeleccionado.horario }}</p>
+                    <p>Profesional: {{especialista.nombre+''+especialista.apellido}}</p>
+                    <p>Especialidad {{turnoSeleccionado.especialidad}}</p>
+                    <p>Paciente: {{ turnoSeleccionado.pacienteEmail }}</p>
+                </ng-container>
+                <ng-template #noTurno>
+                    <p>No hay turno seleccionado.</p>
+                </ng-template>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="confirmarTurno()">Confirmar Turno</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-4">
+    <h3 class="display-6">Profesional - {{especialista?.nombre+' '+especialista?.apellido}}</h3>
+    <h3 class="display-6">Especialidad - {{especialidad}}</h3>
+
+    <button class="btn btn-primary" (click)="cambiarFechaSiguiente()">Siguiente Fecha</button>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    {{ fechaSeleccionada }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let turno of turnosDisponibles; let i = index">
+                <ng-container *ngIf="turno.fecha === fechaSeleccionada;">
+                    <td data-bs-toggle="modal" data-bs-target="#modalConfirmarTurno" (click)="enviarTurno(turno);">{{ turno.horario }}</td>
+                </ng-container>
+            </tr>
+            <!-- Bloque que se mostrará cuando no hay turnos disponibles -->
+          
+        </tbody>
+    </table>
+    <!-- Botón para cambiar la fecha -->
+</div>

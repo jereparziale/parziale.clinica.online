@@ -1,0 +1,237 @@
+<div class="container">
+  <ng-container *ngIf="cargando">
+    <div>
+      <div class="spinner-grow" style="width: 4rem; height: 4rem;" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="tipoUsuario===''">
+    <div class="col-lg-8 mx-auto">
+      <p class="display-6 mb-4">
+        Seleccione el tipo de usuario a registrar
+      </p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <button type="button" class="botonimagen imagenProfesional"
+          (click)="registrarProfesional()">Profesional</button>
+
+        <button type="button" class="botonimagen imagenPaciente" (click)="registrarPaciente()">Paciente</button>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <ng-container *ngIf="!cargando">
+    <ng-container *ngIf="tipoUsuario!==''">
+      <div class="card p-4 mt-4 border border-dark border-5" style="border-radius: 1rem;">
+        <div class="d-flex align-items-center text-center mb-3 pb-1">
+          <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+          <span class="display-4 fw-bold mb-0">Registrate</span>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Atencion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form [formGroup]="formDisponibilidad">
+                  <div class="form-control-group">
+                    <label for="especialidad">Especialidad</label>
+                    <select class="form-control" id="especialidad" formControlName="especialidad">
+                      <option *ngFor="let esp of especialidades" [value]="esp.especialidad">{{ esp.especialidad }}
+                      </option>
+                    </select>
+                    <!-- agregar especialidad -->
+                  </div>
+                  <div class="form-control-group">
+                    <button class="btn btn-primary mt-4" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                      Dias de Atencion
+                    </button>
+                    <div class="collapse" id="collapseExample">
+
+                      <label for="dias">Días de la Semana</label>
+                      <div class="form-check" *ngFor="let dia of diasSemana">
+                        <input class="form-check-input" type="checkbox" [formControlName]="dia" [id]="dia"
+                          [value]="dia">
+                        <label class="form-check-label" [for]="dia">{{ dia }}</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-control-group">
+                    <label for="hora">Duracion del turno (minutos)</label>
+                    <input type="number" class="form-control" [value]="" formControlName="duracionTurno"
+                      id="duracionTurno" min="15" max="60">
+                  </div>
+                  <div class="form-control-group">
+                    <label for="hora">Inicio Jornada (08 a 18 hs)</label>
+                    <input type="number" class="form-control" formControlName="desdeJornada" id="desdeJornada" min="08"
+                      max="18">
+                  </div>
+                  <div class="form-control-group">
+                    <label for="hora">Fin Jornada (08 a 18 hs)</label>
+                    <input type="number" class="form-control" formControlName="hastaJornada" id="hastaJornada" min="08"
+                      max="18">
+                  </div>
+                </form>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button [disabled]="formDisponibilidad.invalid" (click)="enviarDisponibilidad()" type="button"
+                  class="btn btn-primary">Guardar especialidad</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form [formGroup]="form" (ngSubmit)="enviarForm()">
+          <div class="row">
+            <div class="form-control-group col-5">
+              <label class="form-label" for="nombre">Nombre</label>
+              <input type="text" class="form-control" id="nombre" formControlName="nombre">
+              <ng-container *ngIf="nombre?.hasError('pattern')">
+                <small class="text-danger">Sólo debe contener solo letras</small>
+              </ng-container>
+            </div>
+
+
+            <div class="form-control-group col-5">
+              <label class="form-label" for="apellido">Apellido</label>
+              <input type="text" class="form-control" id="apellido" formControlName="apellido">
+              <ng-container *ngIf="apellido?.hasError('pattern')">
+                <small class="text-danger">Sólo debe contener solo letras</small>
+              </ng-container>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+
+
+
+            <div class="form-control-group col-4">
+              <label class="form-label" for="dni">DNI</label>
+              <input type="text" class="form-control" id="dni" formControlName="dni">
+              <ng-container *ngIf="dni?.hasError('maxlength')">
+                <small class="text-danger">
+                  El dni debe tener maximo {{dni?.getError('maxlength').requiredLength}} caracteres
+                </small>
+              </ng-container>
+              <ng-container *ngIf="dni?.hasError('minlength')">
+                <small class="text-danger">
+                  El dni debe tener minimo {{dni?.getError('minlength').requiredLength}} caracteres
+                </small>
+              </ng-container>
+              <ng-container *ngIf="dni?.hasError('pattern')">
+                <small class="text-danger">
+                  El número de dni solo debe contener números.
+                </small>
+              </ng-container>
+            </div>
+
+            <div class="form-control-group col-2">
+              <label class="form-label" for="edad">Edad</label>
+              <input type="number" class="form-control" id="edad" formControlName="edad">
+              <ng-container *ngIf="form.get('edad')?.hasError('max')">
+                <small class="text-danger">
+                  Edad invalida.
+                </small>
+              </ng-container>
+              <ng-container *ngIf="form.get('edad')?.hasError('min')">
+                <small class="text-danger">
+                  La edad debe ser mayor o igual a 0.
+                </small>
+              </ng-container>
+            </div>
+
+            <ng-container *ngIf="tipoUsuario == 'paciente'">
+              <div class="form-control-group col-4">
+                <label class="form-label" for="obraSocial">Obra Social</label>
+                <select class=" form-select form-control" formControlName="obraSocial" id="obraSocial"
+                  name="obraSocial">
+                  <option *ngFor="let esp of obrasSociales" [value]="esp.obraSocial">{{ esp.obraSocial }}</option>
+                </select>
+              </div>
+            </ng-container>
+          </div>
+
+
+
+          <div class="row">
+            <div class="form-control-group col-5">
+              <label class="form-label" for="mail">Mail</label>
+              <input type="email" class="form-control" id="mail" formControlName="mail">
+              <ng-container *ngIf="mail?.hasError('email')">
+                <small class="text-danger">Formato inválido</small>
+              </ng-container>
+            </div>
+
+            <div class="form-control-group col-5">
+              <label class="form-label" for="password">Contraseña</label>
+              <input type="password" class="form-control" id="password" formControlName="password">
+              <ng-container *ngIf="password?.hasError('pattern')">
+                <small class="text-danger">Formato inválido</small>
+              </ng-container>
+              <ng-container *ngIf="password?.hasError('minlength')">
+                <small class="text-danger">Debe tener minimo 8 caracteres</small>
+              </ng-container>
+            </div>
+
+          </div>
+          <ng-container *ngIf="tipoUsuario == 'especialista'">
+
+            <fieldset>
+              <legend>Horarios de atencion cargados</legend>
+              <input type="text" class="form-control" id="especialidadesCargadas"
+                formControlName="especialidadesCargadas" [value]="especialidadesSeleccionadas.toString()" readonly>
+              <button type="button" class="btn btn-secondary mt-4" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
+                Agregar horario de atencion
+              </button>
+            </fieldset>
+          </ng-container> 
+          
+          <div class="row">
+            <div class="form-control-group col-5">
+              <label class="form-label" for="imagenPerfil1">Imagen de perfil N°1</label>
+              <input type="file" class="form-control" id="imagenPerfil1" formControlName="imagenPerfil1" (change)="cargarImagen1($event)">
+            </div>
+            <ng-container *ngIf="tipoUsuario == 'paciente'"> 
+
+            <div class="form-control-group col-5">
+              <label class="form-label" for="imagenPerfil2">Imagen de perfil N°2</label>
+              <input type="file" class="form-control" id="imagenPerfil2" formControlName="imagenPerfil2" (change)="cargarImagen2($event)">
+            </div>
+            </ng-container>
+
+          </div>
+             <!-- Agrega el componente de captcha y enlázalo al FormControl correspondiente -->
+            <app-captcha (captchaVerificado)="actualizarValorCaptcha($event)"></app-captcha>
+            <!-- FormControl para el captcha -->
+            <input type="hidden" formControlName="captcha" />
+            <ng-container *ngIf="form.get('captcha')?.value===false">
+              <small class="text-danger">
+                Captcha incorrecto
+              </small>
+            </ng-container>
+
+          <ng-container *ngIf="form.invalid">
+            <small class="text-danger">
+                Todos los campos son obligatorios y deben tener el formato correcto.
+            </small>
+            <br>
+        </ng-container>
+          <button [disabled]="form.invalid" type="button" (click)="enviarForm()" class="btn btn-primary w-25 mt-4">
+            Enviar
+          </button>
+
+        </form>
+      </div>
+    </ng-container>
+    </ng-container>
+
+</div>

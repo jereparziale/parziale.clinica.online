@@ -1,0 +1,67 @@
+<div  class="d-flex flex-column justify-content-center align-items-center">
+  <h1 id="titulo_productos">Historia Clinica</h1>
+  <ng-container *ngIf="rolUsuario==='paciente'">
+    <button class="btn btn-primary" (click)="generarPDF()">Descargar pdf</button>
+  </ng-container>
+</div>
+<div #historiaClinica class="col-md-9">
+<div class="d-flex flex-wrap align-items-center justify-content-center">
+  <a class="d-flex align-items-center text-dark text-decoration-none ">
+    <img src="assets/logo.avif" width="80" height="80" alt="">
+  </a>
+  </div>
+  <div class="card" *ngFor="let turno of turnos">
+    <div class="card-header">
+      Turno del {{turno.dia}}
+    </div>
+    <div class="card-body">
+      <div class="list-group">
+        <li class="list-group-item list-group-item-action active">
+          <strong>Paciente:</strong> {{turno.pacienteEmail}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Especialista:</strong> {{turno.especialistaEmail}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Estado:</strong> {{turno.estado}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Especialidad:</strong> {{turno.especialidad}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Horario:</strong> {{turno.horario}}
+        </li>
+      </div>
+  
+      <div class="list-group">
+        <li class="list-group-item list-group-item-action active">
+          <strong>Datos de la consulta:</strong>
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Presión sistole:</strong> {{turno.atencion.presionSistole}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Presión diastole:</strong> {{turno.atencion.presionDiastole}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Temperatura:</strong> {{turno.atencion.temperatura}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Peso:</strong> {{turno.atencion.peso}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Altura:</strong> {{turno.atencion.altura}}
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <strong>Datos dinámicos:</strong>
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let dato of turno.atencion.datosDinamicos">
+              {{dato.clave}}: {{dato.valor}}
+            </li>
+          </ul>
+        </li>
+      </div>
+    </div>
+  </div>
+</div>
+   

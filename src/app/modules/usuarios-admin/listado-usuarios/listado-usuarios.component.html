@@ -1,0 +1,103 @@
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centere">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Conceder Acceso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="darAcceso()">Dar
+                    Acceso</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalDisponibilidad" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="modalDisponibilidad" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centere">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDisponibilidad">Disponibilidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ng-container *ngIf="usuarioSeleccionado">
+                    <div class="list-group" *ngFor="let especialidad of usuarioSeleccionado.disponibilidadPorEspecialidad">
+                        <li class="list-group-item list-group-item-action active">
+                            <strong>Especialidad:</strong> {{especialidad.especialidad}}
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <strong>Dias Atencion:</strong> {{especialidad.diasAtencion}}
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <strong>Inicio Jornada:</strong> {{especialidad.desdeJornada}}
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <strong>Fin Jornada:</strong> {{especialidad.hastaJornada}}
+                        </li>
+                        <li class="list-group-item list-group-item-action">
+                            <strong>Duracion del Turno:</strong> {{especialidad.duracionTurno}}
+                        </li>
+                    </div>
+                </ng-container>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <ng-container *ngIf="tipoUsuarioFiltrado=='paciente'">
+                <th *ngFor="let prop of propiedadesPaciente">
+                    {{ prop }}
+                </th>
+            </ng-container>
+            <ng-container *ngIf="tipoUsuarioFiltrado=='especialista'">
+                <th *ngFor="let prop of propiedadesEspecialista">
+                    {{ prop }}
+                </th>
+            </ng-container>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let usuario of usuarios" >
+            <ng-container *ngIf="tipoUsuarioFiltrado=='paciente'">
+                <td *ngFor="let prop of propiedadesPaciente" (click)="seleccionarPaciente(usuario)">
+                    {{ usuario[prop] }}
+                </td>
+            </ng-container>
+
+            <ng-container *ngIf="tipoUsuarioFiltrado=='especialista'">
+                <td *ngFor="let prop of propiedadesEspecialista">
+                    <ng-container *ngIf="prop==='disponibilidadPorEspecialidad'; else otherSection">
+                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                            data-bs-target="#modalDisponibilidad" (click)="seleccionarEspecialista(usuario)">Ver
+                            Disponibilidad</button>
+                    </ng-container>
+                    <ng-template #otherSection>
+                        <ng-container *ngIf="usuario[prop]===false; else anotherSection">
+                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" (click)="seleccionarEspecialista(usuario)">Dar
+                                Acceso</button>
+                        </ng-container>
+                        <ng-template #anotherSection>
+                            <!-- Contenido para el caso de prop diferente de 'disponibilidadPorEspecialidad' y 'otraCondicion' -->
+                            {{ usuario[prop] }}
+                        </ng-template>
+                    </ng-template>
+
+
+                </td>
+            </ng-container>
+        </tr>
+    </tbody>
+</table>

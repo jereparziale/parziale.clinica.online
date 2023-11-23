@@ -1,0 +1,51 @@
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between gradient-custom">
+  <a href="/" class="d-flex align-items-center col-md-2 mb-2 mb-md-0 text-dark text-decoration-none ">
+    <img src="assets/logo.avif" width="80" height="80" alt="">
+  </a>
+
+  <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+    <li><a href="#" class="nav-link px-2 link-secondary">Inicio</a></li>
+    <ng-container *ngIf="rolUsuario==='admin'">
+      <li><a (click)="usuariosAdmin()" class="nav-link px-2 link-dark">Usuarios</a></li>
+    </ng-container>
+  <ng-container *ngIf="rolUsuario!=='admin' && rolUsuario!==''">
+    <li><a (click)="misTurnos()" class="nav-link px-2 link-dark">Mis Turnos</a></li>
+  </ng-container>
+  <ng-container *ngIf="rolUsuario==='admin'">
+    <li><a (click)="turnosAdmin()" class="nav-link px-2 link-dark">Turnos</a></li>
+  </ng-container>
+ 
+    <ng-container *ngIf="rolUsuario==='paciente'">
+      <li><a (click)="turnos()" class="nav-link px-2 link-dark">Solicitar Turno</a></li>
+    </ng-container>
+
+    <ng-container *ngIf="rolUsuario!==''">
+      <li><a class="nav-link px-2 link-dark" (click)="miPerfil()">Mi Perfil</a></li>
+    </ng-container>
+
+    <ng-container *ngIf="rolUsuario==='especialista'">
+      <li><a class="nav-link px-2 link-dark" (click)="misPacientes()">Pacientes</a></li>
+    </ng-container>
+    <ng-container *ngIf="rolUsuario==='admin'">
+      <li><a href="#" class="nav-link px-2 link-dark disabled">Estadisticas</a></li>
+    </ng-container>
+    <li><a class="nav-link px-2 link-dark disabled">{{usuarioEmail}}</a></li>
+  </ul>
+
+  <div class="col-md-3 text-end">
+    <ng-container *ngIf="!usuarioLogueado">
+      <button type="button" class="btn btn-light me-2" (click)="login()">Ingresar</button>
+    </ng-container>
+
+    <ng-container *ngIf="!usuarioLogueado">
+
+    <button type="button" class="btn btn-light me-2" (click)="register()">Registrarse</button>
+  </ng-container>
+
+    <ng-container *ngIf="usuarioLogueado">
+
+    <button type="button" class="btn btn-light me-2" (click)="cerrarSesion()">Cerrar Sesion</button>
+  </ng-container>
+
+  </div>
+</header>

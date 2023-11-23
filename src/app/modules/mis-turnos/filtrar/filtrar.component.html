@@ -1,0 +1,62 @@
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <ng-container *ngIf="!mostrarMisTurnos">
+
+            <h3>Filtrar por {{filtrarPor}}</h3>
+            <p>Ingrese el nombre {{titulo}}</p> 
+            <div class="input-group">
+                <ng-container *ngIf="filtrarPor==='profesional' || filtrarPor==='paciente'">
+                <input type="text" class="form-control" [(ngModel)]="busqueda">
+                <button type="button" class="btn btn-primary" (click)="buscar()">Buscar</button>
+            </ng-container>
+
+            </div>
+            <ng-container *ngIf="filtrarPor==='especialidad' && rolUsuario==='especialista'">
+                <div class="list-group list-group-flush ">
+                    <div *ngFor="let elemento of especialidadesDelProfesional"
+                        class="list-group-item list-group-item-action list-group-item-light" (click)="selecionarEspecialidad(elemento);">
+                        {{elemento}}
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="filtrarPor==='especialidad' && rolUsuario==='paciente'">
+                <div class="list-group list-group-flush ">
+                    <div *ngFor="let elemento of especialidades"
+                        class="list-group-item list-group-item-action list-group-item-light" (click)="selecionarEspecialidad(elemento.especialidad);">
+                        {{elemento.especialidad}}
+                    </div>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="filtrarPor==='profesional'">
+                <div *ngIf="resultadosBusqueda.length > 0" class="list-group list-group-flush ">
+                    <div *ngFor="let elemento of resultadosBusqueda"
+                        class="list-group-item list-group-item-action list-group-item-light" (click)="seleccionarProfesional(elemento);">
+                        {{elemento.nombre+''+elemento.apellido}}
+                    </div> 
+                </div>
+            </ng-container>
+            <ng-container *ngIf="filtrarPor==='paciente'">
+                <div *ngIf="resultadosBusqueda.length > 0" class="list-group list-group-flush ">
+                    <div *ngFor="let elemento of resultadosBusqueda"
+                        class="list-group-item list-group-item-action list-group-item-light" (click)="seleccionarPaciente(elemento);">
+                        {{elemento.nombre+''+elemento.apellido}}
+                    </div> 
+                </div>
+            </ng-container>
+
+            <!-- Mensaje si no hay resultados -->
+            <div *ngIf="noHayResultados" class="alert alert-warning mt-3">
+                No se encontraron resultados.
+            </div>
+        </ng-container>
+       
+
+    </div>
+    <ng-container *ngIf="mostrarMisTurnos">
+        <app-mis-turnos [tipoFiltrado]="tipoFiltrado" [rolUsuario]="rolUsuario" [objetoBuscado]="objetoSeleccionado" [especialidadSeleccionada]="especialidadSeleccionada"></app-mis-turnos>
+    </ng-container>
+
+
+
+</div>

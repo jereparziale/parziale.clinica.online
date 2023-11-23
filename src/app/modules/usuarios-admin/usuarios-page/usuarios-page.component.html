@@ -1,0 +1,28 @@
+<div class="px-1 py-2 my-2 text-center">
+    <h1 class="display-5 fw-bold">Usuarios</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="lead mb-4">
+
+     </p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <button type="button" class="btn btn-primary btn-lg px-4"  (click)="registrarAdministrador()">Crear Administradores</button>
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarPacientes()">Listar Pacientes</button>
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarEspecialistas()">Listar Listar Especialistas</button>
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="exportarExcelDesdeUsuariosPage()">Exportar A Excel (.xlsx)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-example-divider"></div>
+  <ng-container *ngIf="mostrarPacientes">
+    <app-listado-usuarios [tipoUsuarioFiltrado]="tipoUsuarioFiltrado" (retornarPaciente)="verHistoriaClinica($event)"></app-listado-usuarios>
+  </ng-container>
+  <ng-container *ngIf="mostrarEspecialistas">
+    <app-listado-usuarios [tipoUsuarioFiltrado]="tipoUsuarioFiltrado"></app-listado-usuarios>
+  </ng-container>
+  <ng-container *ngIf="registrarAdmin">
+    <app-register [usuarioAdmin]=true></app-register>
+  </ng-container>
+  <ng-container *ngIf="mostrarHistoriaClinica">
+    <app-historia-clinica [paciente]="pacienteSeleccionado"></app-historia-clinica>
+  </ng-container>

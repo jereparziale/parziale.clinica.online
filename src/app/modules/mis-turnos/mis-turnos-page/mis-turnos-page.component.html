@@ -1,0 +1,34 @@
+<div class="px-1 py-2 my-2 text-center">
+    <h1 class="display-1">Mis Turnos</h1>
+    <ng-container *ngIf="!filtrarProfesional && !filtrarEspecialidad && !filtrarPaciente">
+        <div class="col-lg-8 mx-auto">
+            <p class="lead mb-4">
+                Seleccione el parametro de busqueda de turnos
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <button type="button" class="botonimagen imagenEspecialidad" (click)="irEspecialidad()">Turnos Por Especialidad</button>
+                <ng-container *ngIf="rolSesion==='paciente'">
+                    <button type="button" class="botonimagen imagenProfesional" (click)="irProfesional()">Turnos Por Profesional</button>
+                </ng-container>
+                
+                <ng-container *ngIf="rolSesion==='especialista'">
+                    <button type="button" class="botonimagen imagenPaciente"(click)="irPaciente()">Turnos Por Paciente</button>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+
+
+ 
+    <ng-container *ngIf="filtrarProfesional">
+        <app-filtrar [tipoFiltrado]="'profesional'" [rolUsuario]="rolSesion"></app-filtrar>
+    </ng-container>
+    <ng-container *ngIf="filtrarEspecialidad">
+        <app-filtrar [tipoFiltrado]="'especialidad'" [rolUsuario]="rolSesion"></app-filtrar>
+    </ng-container>
+    <ng-container *ngIf="filtrarPaciente">
+        <app-filtrar [tipoFiltrado]="'paciente'" [rolUsuario]="rolSesion"></app-filtrar>
+    </ng-container>
+    
+
+</div> 
