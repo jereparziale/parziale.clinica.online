@@ -1,26 +1,60 @@
-<div  class="d-flex flex-column justify-content-center align-items-center">
+<div class="modal fade" id="modalDescargarHistoria" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="modalDescargarHistoria" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalDescargarHistoria">Descargar Historia Clinica</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <select class="form-select" aria-label="Default select example" (change)="seleccionarEspecialidad($event)">
+          <option selected>Seleccione la especialidad a imprimir y se descargara el pdf</option>
+          <ng-container *ngIf="especialidades">
+            <option *ngFor="let especialidad of especialidades" [value]="especialidad.especialidad">
+              {{especialidad.especialidad}}  </option>
+          </ng-container>
+
+        </select>
+      </div>
+      <div class="modal-footer">
+        <ng-container *ngIf="!hayTurnos && especialidadSeleccionada">
+          <div class="alert alert-warning mt-3">
+            Aun no tiene turnos en esa especialidad
+          </div>
+        </ng-container>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-column justify-content-center align-items-center">
   <h1 id="titulo_productos">Historia Clinica</h1>
-  <ng-container *ngIf="rolUsuario==='paciente'">
-    <button class="btn btn-primary" (click)="generarPDF()">Descargar pdf</button>
+  <ng-container *ngIf="rolUsuario==='paciente' || turnos.length !== 0">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDescargarHistoria">Descargar
+      pdf</button>
   </ng-container>
 </div>
-<div #historiaClinica class="col-md-9">
-<div class="d-flex flex-wrap align-items-center justify-content-center">
-  <a class="d-flex align-items-center text-dark text-decoration-none ">
-    <img src="assets/logo.avif" width="80" height="80" alt="">
-  </a>
+<div #historiaClinica class="col-md-12">
+  <div class="d-flex flex-wrap align-items-center justify-content-center">
+    <a class="d-flex align-items-center text-dark text-decoration-none ">
+      <img src="assets/logo.avif" width="80" height="80" alt="">
+    </a>
   </div>
-  <div class="card" *ngFor="let turno of turnos">
+  <div *ngIf="turnos.length === 0" class="alert alert-warning mt-3">
+    Aun no tiene turnos asignados ni finalizados.
+  </div>
+  <div class="card mt-4" *ngFor="let turno of turnos">
     <div class="card-header">
       Turno del {{turno.dia}}
     </div>
     <div class="card-body">
       <div class="list-group">
         <li class="list-group-item list-group-item-action active">
-          <strong>Paciente:</strong> {{turno.pacienteEmail}}
+          <strong>Paciente:</strong> {{paciente?.nombre+' '+paciente?.apellido}}
         </li>
         <li class="list-group-item list-group-item-action">
-          <strong>Especialista:</strong> {{turno.especialistaEmail}}
+          <strong>Especialista:</strong> {{turno.nombreEspecialista}}
         </li>
         <li class="list-group-item list-group-item-action">
           <strong>Estado:</strong> {{turno.estado}}
@@ -32,36 +66,37 @@
           <strong>Horario:</strong> {{turno.horario}}
         </li>
       </div>
-  
-      <div class="list-group">
-        <li class="list-group-item list-group-item-action active">
-          <strong>Datos de la consulta:</strong>
-        </li>
-        <li class="list-group-item list-group-item-action">
-          <strong>Presión sistole:</strong> {{turno.atencion.presionSistole}}
-        </li>
-        <li class="list-group-item list-group-item-action">
-          <strong>Presión diastole:</strong> {{turno.atencion.presionDiastole}}
-        </li>
-        <li class="list-group-item list-group-item-action">
-          <strong>Temperatura:</strong> {{turno.atencion.temperatura}}
-        </li>
-        <li class="list-group-item list-group-item-action">
-          <strong>Peso:</strong> {{turno.atencion.peso}}
-        </li>
-        <li class="list-group-item list-group-item-action">
-          <strong>Altura:</strong> {{turno.atencion.altura}}
-        </li>
-        <li class="list-group-item list-group-item-action">
-          <strong>Datos dinámicos:</strong>
-          <ul class="list-group">
-            <li class="list-group-item" *ngFor="let dato of turno.atencion.datosDinamicos">
-              {{dato.clave}}: {{dato.valor}}
-            </li>
-          </ul>
-        </li>
-      </div>
+      <ng-container *ngIf="turno.atencion && turno.atencion.presionSistole">
+        <div class="list-group">
+          <li class="list-group-item list-group-item-action active">
+            <strong>Datos de la consulta:</strong>
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <strong>Presión sistole:</strong> {{turno.atencion.presionSistole}}
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <strong>Presión diastole:</strong> {{turno.atencion.presionDiastole}}
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <strong>Temperatura:</strong> {{turno.atencion.temperatura}}
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <strong>Peso:</strong> {{turno.atencion.peso}}
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <strong>Altura:</strong> {{turno.atencion.altura}}
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <strong>Datos dinámicos:</strong>
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let dato of turno.atencion.datosDinamicos">
+                {{dato.clave}}: {{dato.valor}}
+              </li>
+            </ul>
+          </li>
+        </div>
+      </ng-container>
+
     </div>
   </div>
 </div>
-   

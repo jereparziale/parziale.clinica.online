@@ -25,15 +25,12 @@ export class MisTurnosComponent implements OnInit {
   private TurnosService: TurnosService = inject(TurnosService);
   private UserAuthService: UserAuthService = inject(UserAuthService);
 
-  @Input() tipoFiltrado?: string;
   @Input() rolUsuario?: string;
-  @Input() objetoBuscado?: Paciente | Especialista;
-  @Input() especialidadSeleccionada?: string;
+  @Input() turnosArray?: Turno[];
   public observable:Subscription | undefined
   public mostrarCargaAtencion:boolean=false;
 
 
-  turnosArray: Turno[] = [];
   turnoSeleccionado: Turno | undefined;
   usuarioEmail: string = '';
   comentario: string = '';
@@ -45,67 +42,6 @@ export class MisTurnosComponent implements OnInit {
     this.UserAuthService.estadoLogObservable().subscribe((user) => {
       if (user) {
         this.usuarioEmail = user.email;
-          switch (this.rolUsuario) {
-            case 'paciente':
-              switch (this.tipoFiltrado) {
-                case 'especialidad':
-                  if(this.especialidadSeleccionada)
-                 this.observable=this.TurnosService.traerPorPacienteYEspecialidad(
-                    user.email,
-                    this.especialidadSeleccionada
-                  ).subscribe((turnos) => {
-                    if (turnos) {
-                      this.turnosArray = turnos;
-                    }
-                  });
-                  break;
-                case 'profesional':
-                  if(this.objetoBuscado)
-                  this.observable=this.TurnosService.traerPorPacienteYProfesional(
-                    this.objetoBuscado.mail,
-                    user.email
-                  ).subscribe((turnos) => {
-                    if (turnos) {
-                      this.turnosArray = turnos;
-                    }
-                  });
-                  console.log( user.email)
-                  console.log(this.objetoBuscado)
-                  break;
-                default:
-                  break;
-              }
-              break;
-  
-            case 'especialista':
-              switch (this.tipoFiltrado) {
-                case 'especialidad':
-                  if(this.especialidadSeleccionada)
-                  this.observable=this.TurnosService.traerPorEspecialistaYEspecialidad(
-                    user.email,
-                    this.especialidadSeleccionada
-                  ).subscribe((turnos) => {
-                    if (turnos) {
-                      this.turnosArray = turnos;
-                    }
-                  });
-                  break;
-                case 'paciente':
-                  if(this.objetoBuscado)
-                  this.observable=this.TurnosService.traerPorPacienteYProfesional(
-                    user.email,
-                    this.objetoBuscado.mail
-                  ).subscribe((turnos) => {
-                    if (turnos) {
-                      this.turnosArray = turnos;
-                    }
-                  });
-                  break;
-                default:
-                  break;
-              }
-              break;
-          }
         }
         
     });
@@ -127,7 +63,6 @@ export class MisTurnosComponent implements OnInit {
   }
   finalizarTurno(turno: Turno) {
     this.turnoSeleccionado = turno;
-
     this.nuevoEstado = 'realizado';
     this.mostrarCargaAtencion=true;
   }

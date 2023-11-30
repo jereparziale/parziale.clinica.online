@@ -41,7 +41,7 @@ export class MiPerfilPageComponent implements OnInit{
                 }else{
                   this.administrador = this.usuarioActual as Usuario;
                 }
-                this.ImagenesService.getImagen('imagesUsuarios',this.usuarioActual.mail,'1')
+                this.ImagenesService.getImagen('imagesUsuarios',this.usuarioActual.mail,'_1')
                 .then((res)=>{
                   this.urlImagen1=res;
                 })

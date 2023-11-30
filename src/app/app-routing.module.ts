@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'mis_turnos', loadChildren: () => import('./modules/mis-turnos/mis-turnos.module').then(m => m.MisTurnosModule)},
   { path: 'mi_perfil', loadChildren: () => import('./modules/mi-perfil/mi-perfil.module').then(m => m.MiPerfilModule)},
   { path: 'mis_pacientes', loadChildren: () => import('./modules/mis-pacientes/mis-pacientes.module').then(m => m.MisPacientesModule)},
+  { path: 'estadisticas', loadChildren: () => import('./modules/estadisticas-admin/estadisticas-admin.module').then(m => m.EstadisticasAdminModule)},
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

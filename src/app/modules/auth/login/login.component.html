@@ -22,7 +22,7 @@
             <div class="grupo-usuarios">
               <span class="display-6">Administrador</span>
 
-              <div *ngFor="let usuario of usuariosAdmin">
+              <div  *ngFor="let usuario of usuariosAdmin">
                 <app-accesos-rapidos [usuarioEmail]="usuario.email" [contrasenia]="usuario.password"
                   (seleccionarUsuario)="cargarUsuarioSeleccionado($event)"></app-accesos-rapidos>
               </div>
@@ -31,7 +31,7 @@
             <div class="grupo-usuarios">
 
               <span class="display-6">Paciente</span>
-              <div class="d-flex">
+              <div class="d-flex flex-column">
 
               <div *ngFor="let usuario of usuariosPaciente">
                 <app-accesos-rapidos [usuarioEmail]="usuario.email" [contrasenia]="usuario.password"
@@ -43,7 +43,7 @@
             <div class="grupo-usuarios">
 
               <span class="display-6">Especialista</span>
-              <div class="d-flex">
+              <div class="d-flex flex-column" >
                 <div *ngFor="let usuario of usuariosEspecialista">
                   <app-accesos-rapidos [usuarioEmail]="usuario.email" [contrasenia]="usuario.password"
                     (seleccionarUsuario)="cargarUsuarioSeleccionado($event)"></app-accesos-rapidos>

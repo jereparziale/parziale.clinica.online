@@ -1,3 +1,27 @@
+<div class="modal fade" id="descargarExcelTurnos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="descargarExcelTurnos" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centere">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descargarExcelTurnos">¿Descargar Excel de turnos?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <ng-container *ngIf="turnos.length!==0; else anotherSection">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                        (click)="descargarExcelTurnos()">Descargar</button>
+                </ng-container>
+                <ng-template #anotherSection>
+                    <div *ngIf="turnos.length === 0" class="alert alert-warning mt-3">
+                        Aun no tiene turnos asignados ni finalizados.
+                    </div>
+                </ng-template>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centere">
@@ -24,7 +48,8 @@
             </div>
             <div class="modal-body">
                 <ng-container *ngIf="usuarioSeleccionado">
-                    <div class="list-group" *ngFor="let especialidad of usuarioSeleccionado.disponibilidadPorEspecialidad">
+                    <div class="list-group"
+                        *ngFor="let especialidad of usuarioSeleccionado.disponibilidadPorEspecialidad">
                         <li class="list-group-item list-group-item-action active">
                             <strong>Especialidad:</strong> {{especialidad.especialidad}}
                         </li>
@@ -42,7 +67,7 @@
                         </li>
                     </div>
                 </ng-container>
-               
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -51,53 +76,48 @@
     </div>
 </div>
 
-
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <ng-container *ngIf="tipoUsuarioFiltrado=='paciente'">
-                <th *ngFor="let prop of propiedadesPaciente">
-                    {{ prop }}
-                </th>
+<div class="row">
+    <div class="card col-7 mx-auto" *ngFor="let elemento of usuarios">
+        <div class="card-header bold">
+            {{elemento.nombre+' '+elemento.apellido}}
+        </div>
+        <div class="card-body">
+            <p  >Edad: {{ elemento.edad }}</p>
+            <p  >DNI: {{ elemento.dni }}</p>
+            <p  >Email: {{ elemento.mail }}</p>
+            <ng-container *ngIf="tipoUsuarioFiltrado=='paciente'; else especialistaContent">
+                <p  >Obra Social: {{ elemento.obraSocial }}</p>
+                <button type="button" (click)="irAEtiqueta()" class="btn btn-outline-dark" (click)="seleccionarPaciente(elemento)">Ver Historia
+                    Clinica</button>
+                <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                    data-bs-target="#descargarExcelTurnos" (click)="seleccionarPaciente(elemento)">Descargar Excel Turnos</button>
             </ng-container>
-            <ng-container *ngIf="tipoUsuarioFiltrado=='especialista'">
-                <th *ngFor="let prop of propiedadesEspecialista">
-                    {{ prop }}
-                </th>
-            </ng-container>
-
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let usuario of usuarios" >
-            <ng-container *ngIf="tipoUsuarioFiltrado=='paciente'">
-                <td *ngFor="let prop of propiedadesPaciente" (click)="seleccionarPaciente(usuario)">
-                    {{ usuario[prop] }}
-                </td>
-            </ng-container>
-
-            <ng-container *ngIf="tipoUsuarioFiltrado=='especialista'">
-                <td *ngFor="let prop of propiedadesEspecialista">
-                    <ng-container *ngIf="prop==='disponibilidadPorEspecialidad'; else otherSection">
-                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
-                            data-bs-target="#modalDisponibilidad" (click)="seleccionarEspecialista(usuario)">Ver
-                            Disponibilidad</button>
+            <ng-template #especialistaContent>
+                <ng-container *ngIf="elemento.accesoConcedido===false; else anotherSection">
+                    <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop" (click)="seleccionarEspecialista(elemento)">Dar
+                        Acceso</button>
+                </ng-container>
+                <ng-template #anotherSection>
+                    <ng-container *ngIf="elemento.accesoConcedido===true">
+                        <p  >Acceso concedido</p>
+                        <img [src]="elemento.accesoConcedido| trueFalse" alt="Imagen según booleano"
+                            style="max-width: 30px; width: auto;">
                     </ng-container>
-                    <ng-template #otherSection>
-                        <ng-container *ngIf="usuario[prop]===false; else anotherSection">
-                            <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop" (click)="seleccionarEspecialista(usuario)">Dar
-                                Acceso</button>
-                        </ng-container>
-                        <ng-template #anotherSection>
-                            <!-- Contenido para el caso de prop diferente de 'disponibilidadPorEspecialidad' y 'otraCondicion' -->
-                            {{ usuario[prop] }}
-                        </ng-template>
-                    </ng-template>
+                </ng-template>
+                <h3>Especialidades</h3>
+                <ul class="list-group">
+                    <li *ngFor="let disponibilidad of elemento.disponibilidadPorEspecialidad" class="list-group-item">
+                        <p class="mb-1">Especialidad: {{ disponibilidad.especialidad }}</p>
+                        <p class="mb-1">Días de atención: {{ disponibilidad.diasAtencion }}</p>
+                        <p class="mb-1">Duración del turno: {{ disponibilidad.duracionTurno }} minutos</p>
+                        <p class="mb-1">Desde: {{ disponibilidad.desdeJornada }} - Hasta: {{ disponibilidad.hastaJornada
+                            }}</p>
+                    </li>
+                </ul>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<div id="historia"></div>
 
-
-                </td>
-            </ng-container>
-        </tr>
-    </tbody>
-</table>

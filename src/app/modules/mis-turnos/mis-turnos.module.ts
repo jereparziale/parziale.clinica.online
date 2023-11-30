@@ -10,13 +10,13 @@ import { CargarAtencionComponent } from './cargar-atencion/cargar-atencion.compo
 
 
 @NgModule({
-  declarations: [MisTurnosPageComponent, FiltrarComponent, MisTurnosComponent, CargarAtencionComponent,
+  declarations: [MisTurnosPageComponent, FiltrarComponent, MisTurnosComponent, CargarAtencionComponent
   ],
   imports: [
     CommonModule,
     MisTurnosRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ]
 })
 export class MisTurnosModule { } 

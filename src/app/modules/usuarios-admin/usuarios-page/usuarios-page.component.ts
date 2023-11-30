@@ -41,6 +41,7 @@ export class UsuariosPageComponent {
   verHistoriaClinica(paciente:Paciente){
     this.registrarAdmin = false;
     this.pacienteSeleccionado=paciente;
+    console.log(this.pacienteSeleccionado);
     this.mostrarHistoriaClinica=true;
   }
 

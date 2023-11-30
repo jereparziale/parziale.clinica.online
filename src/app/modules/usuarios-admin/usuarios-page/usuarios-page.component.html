@@ -7,7 +7,7 @@
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
           <button type="button" class="btn btn-primary btn-lg px-4"  (click)="registrarAdministrador()">Crear Administradores</button>
           <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarPacientes()">Listar Pacientes</button>
-          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarEspecialistas()">Listar Listar Especialistas</button>
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarEspecialistas()">Listar Especialistas</button>
           <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="exportarExcelDesdeUsuariosPage()">Exportar A Excel (.xlsx)</button>
       </div>
     </div>
@@ -25,4 +25,4 @@
   </ng-container>
   <ng-container *ngIf="mostrarHistoriaClinica">
     <app-historia-clinica [paciente]="pacienteSeleccionado"></app-historia-clinica>
-  </ng-container>
+  </ng-container> 

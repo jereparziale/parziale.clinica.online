@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuariosPageComponent } from './usuarios-page/usuarios-page.component';
 import { ListadoUsuariosComponent } from './listado-usuarios/listado-usuarios.component';
-import { UsuariosAdminRoutingModule } from './usuarios-admin-routing.module';
 import { AuthModule } from '../auth/auth.module';
 import { SharedModule } from '../shared/shared.module';
+import { UsuariosAdminRoutingModule } from './usuarios-admin-routing.module';
+import { TrueFalsePipe } from 'src/app/pipes/true-false.pipe';
 
 
 
@@ -12,12 +13,13 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [
     UsuariosPageComponent,
     ListadoUsuariosComponent,
+    TrueFalsePipe
   ],
   imports: [
     CommonModule,
-    UsuariosAdminRoutingModule,
     AuthModule,
-    SharedModule
+    SharedModule,
+    UsuariosAdminRoutingModule,
   ]
 })
 export class UsuariosAdminModule { }

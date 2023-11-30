@@ -1,0 +1,41 @@
+<section class="container col-8">
+    <h2 class="py-2">Seleccione el periodo a buscar</h2>
+    <form class="row">
+        <label for="date" class="col-4 col-form-label">Dia Inicio</label>
+        <div class="input-group date" id="datepicker">
+            <input type="date" class="form-control" id="date" (change)="cargarFechaInicio($event)" />
+        </div>
+        <label for="date" class="col-4 col-form-label">Dia Fin</label>
+        <div class="input-group date" id="datepicker">
+            <input type="date" class="form-control" id="date" (change)="cargarFechaFin($event)" />
+        </div>
+        <div class="form-check form-switch" (click)="onCheckboxClick()">
+          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" >
+          <label class="form-check-label" for="flexSwitchCheckDefault" >¿Solo turnos finalizados?</label>
+      </div>
+        <h2 class="py-2 mb-3">Seleccionar Profesionales</h2>
+        <div class="list-group list-group-flush ">
+            <div *ngFor="let elemento of usuarios" class="list-group-item list-group-item-action list-group-item-light mb-3"
+                (click)="seleccionarEspecialista(elemento)">
+                {{elemento.nombre+' '+elemento.apellido}}
+                <span class="badge badge-success text-dark" *ngIf="elemento === especialistaSeleccionado">Seleccionado</span>
+            </div>
+        </div>
+      
+        <ng-container *ngIf="fechaSeleccionadaInicio!=='' && fechaSeleccionadaFin!=='' && especialistaSeleccionado">
+            <button type="button" class="btn btn-outline-dark mb-3" (click)="buscarTurnos()">Ver Cantidad Turnos</button>
+        </ng-container>
+
+        <ng-container *ngIf="fechaSeleccionadaInicio!=='' && fechaSeleccionadaFin!=='' && especialistaSeleccionado && cantidadTurnos===0 && buscado">
+            <div class="alert alert-warning mt-3">
+              No hay turnos asignados/finalizados en las fechas seleccionada.
+            </div>
+          </ng-container>
+          <ng-container *ngIf="fechaSeleccionadaInicio!=='' && fechaSeleccionadaFin!=='' && especialistaSeleccionado && cantidadTurnos>0">
+            <div class="alert alert-success mt-3" role="alert">
+              La cantidad de turnos en la fecha seleccionada fue de {{cantidadTurnos}}.
+            </div>
+          </ng-container>
+
+    </form>
+</section>

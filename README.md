@@ -59,9 +59,7 @@ Este modulo cuenta con 4 acciones disponibles:
 
 ![foto](https://github.com/jereparziale/parziale.clinica.online/blob/main/assets_readme/usuarios%20admin.jpeg)
 
-### Turnos
 
-AUN NO IMPLEMENTADA
 
 ### Mi Perfil
 

@@ -1,0 +1,13 @@
+.boton-cuadrado {
+    width: 100px;
+    height: 100px; /* Ajusta el tamaño según tus necesidades */
+    margin: 5px;
+    border-radius: 5px;
+    display: flex;
+    font-weight: bold;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    text-align: center;
+    background-color: #20c997;
+  }

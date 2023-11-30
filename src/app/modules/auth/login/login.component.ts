@@ -12,7 +12,11 @@ import { UsuarioService } from 'src/app/services/firestore/usuarios/usuario.serv
 import { Paciente } from 'src/app/models/usuarios/paciente';
 import { Especialista } from 'src/app/models/usuarios/especialista';
 import { Subscription } from 'rxjs';
-
+import { LogsService } from 'src/app/services/firestore/logs/logs.service';
+interface log{
+    usuario: string
+    fecha_Ingreso: Date
+}
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,7 +28,8 @@ export class LoginComponent {
   constructor(
     private UserAuthService: UserAuthService,
     private router: Router,
-    private UsuarioService: UsuarioService
+    private UsuarioService: UsuarioService,
+    private LogsService: LogsService
   ) {}
   public emailAccesoRapido = '';
   public passwordAccesoRapido = '';
@@ -87,6 +92,7 @@ export class LoginComponent {
     this.UserAuthService.login(this.usuario)
       .then((res) => {
         if (res.user.emailVerified) {
+          this.guardarLog()
           this.router.navigateByUrl('home');
         } else {
           swal.fire({
@@ -101,6 +107,15 @@ export class LoginComponent {
       })
       .finally(() => {
         this.cargando = false;
+      });
+  }
+
+  guardarLog() {
+    const fechaActual = new Date().toLocaleString();
+    let log: { usuario: string; fecha_Ingreso: string } = { usuario: this.usuario.email, fecha_Ingreso: fechaActual };
+    this.LogsService.guardar(log)
+      .then(() => {
+        // console.log("Guardado");
       });
   }
 

@@ -24,7 +24,7 @@ import { Paciente } from 'src/app/models/usuarios/paciente';
 export class UsuarioService {
   private firestore: Firestore = inject(Firestore);
   public instanciaFirestore = collection(this.firestore, 'usuarios');
-  public queryInstancia: any | undefined;
+  public queryInstancia: any | undefined; 
   public usuario: Paciente | Especialista | undefined;
   private traerUnoSubscription: Subscription | undefined;
 

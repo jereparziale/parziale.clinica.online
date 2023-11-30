@@ -11,9 +11,6 @@
   <ng-container *ngIf="rolUsuario!=='admin' && rolUsuario!==''">
     <li><a (click)="misTurnos()" class="nav-link px-2 link-dark">Mis Turnos</a></li>
   </ng-container>
-  <ng-container *ngIf="rolUsuario==='admin'">
-    <li><a (click)="turnosAdmin()" class="nav-link px-2 link-dark">Turnos</a></li>
-  </ng-container>
  
     <ng-container *ngIf="rolUsuario==='paciente'">
       <li><a (click)="turnos()" class="nav-link px-2 link-dark">Solicitar Turno</a></li>
@@ -27,7 +24,7 @@
       <li><a class="nav-link px-2 link-dark" (click)="misPacientes()">Pacientes</a></li>
     </ng-container>
     <ng-container *ngIf="rolUsuario==='admin'">
-      <li><a href="#" class="nav-link px-2 link-dark disabled">Estadisticas</a></li>
+      <li><a class="nav-link px-2 link-dark" (click)="irEstadisticas()">Estadisticas</a></li>
     </ng-container>
     <li><a class="nav-link px-2 link-dark disabled">{{usuarioEmail}}</a></li>
   </ul>

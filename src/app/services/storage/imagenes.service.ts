@@ -15,7 +15,7 @@ export class ImagenesService {
 
   getImagen(carpeta: string, usuarioMail: string, numeroImagen: string): Promise<string> {
     try {
-      const url = `${carpeta}/${usuarioMail}_${numeroImagen}`;
+      const url = `${carpeta}/${usuarioMail}${numeroImagen}`;
       const imagesRef = ref(this.storage, url);
       const downloadUrl = getDownloadURL(imagesRef);
       // console.log('URL de descarga:', downloadUrl);

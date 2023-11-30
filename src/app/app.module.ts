@@ -12,6 +12,8 @@ import { getFirestore, provideFirestore,  } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClicResaltarFondoDirective } from './directives/clic-resaltar-fondo.directive';
 
 
 @NgModule({
@@ -20,11 +22,13 @@ import { environment } from '../environments/environment';
     NavbarComponent,
     FooterComponent,
     HomeComponent,
+    ClicResaltarFondoDirective,
   ],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),
 
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
     provideAuth(() => getAuth()),

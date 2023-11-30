@@ -1,6 +1,6 @@
 import { Component, Input, inject } from '@angular/core';
 import { Especialista } from 'src/app/models/usuarios/especialista';
-import { UsuarioService } from 'src/app/services/firestore/usuarios/usuario.service';
+import {FechaSprint2Pipe} from 'src/app/pipes/fecha-sprint2.pipe'
 import { es } from 'date-fns/locale';
 import { format } from 'date-fns';
 import { Turno } from 'src/app/models/turno';
@@ -12,6 +12,7 @@ interface TurnoHorario {
 }
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { UsuarioService } from 'src/app/services/firestore/usuarios/usuario.service';
 
 
 @Component({
@@ -22,7 +23,8 @@ import { Router } from '@angular/router';
 export class GrillaTurnosComponent {
   constructor(private AuthService:UserAuthService,
               private TurnosService:TurnosService,
-              private router: Router
+              private router: Router,
+              private UsuarioService: UsuarioService
               ) { }
 
   @Input() especialista?: Especialista;
@@ -45,13 +47,15 @@ export class GrillaTurnosComponent {
       day: '2-digit',
     });
 
-    // Genera el array de fechas para los próximos 15 días
-    this.fechasProximos15Dias = this.generarFechasProximos15Dias();
+    // this.fechasProximos15Dias = this.generarFechasProximos15Dias();
     this.generarTurnosDisponibles();
   }
 
   generarTurnosDisponibles() {
+    
     const fechaActual = new Date();
+    const fechaManana = new Date();
+    fechaManana.setDate(fechaActual.getDate() + 1);
     const fechaLimite = new Date();
     fechaLimite.setDate(fechaActual.getDate() + 15);
     if (this.especialista) {
@@ -62,10 +66,11 @@ export class GrillaTurnosComponent {
       // console.log(disponibilidadEspecialidad)
 
       for (
-        let fecha = new Date(fechaActual);
+        let fecha = new Date(fechaManana);
         fecha <= fechaLimite;
         fecha.setDate(fecha.getDate() + 1)
       ) {
+        console.log(fecha)
         const diaSemana = format(fecha, 'EEEE', { locale: es }).toLowerCase();
 
         // console.log('Fecha:', fecha.toLocaleDateString());
@@ -101,27 +106,45 @@ export class GrillaTurnosComponent {
   }
 
   enviarTurno(fechaTurno: TurnoHorario) {
-    if (this.especialista && this.especialidad) {
-      const nuevoTurno = new Turno(
-        '',
-        fechaTurno.fecha,
-        fechaTurno.horario,
-        this.AuthService.usuarioEmail,
-        this.especialista?.mail,
-        this.especialidad,
-        'pendienteAceptacion',
-        '',
-        '',
-        '',
-        ''
-      );
-      this.turnoSeleccionado=nuevoTurno;
-      console.log(nuevoTurno);
-    }
+
+    this.UsuarioService.traerUno(this.AuthService.usuarioEmail)
+    .subscribe((res)=>{
+      if(res[0]){
+        if (this.especialista && this.especialidad) {
+          const nuevoTurno = new Turno(
+            '',
+            fechaTurno.fecha,
+            fechaTurno.horario,
+            res[0].nombre+' '+res[0].apellido,
+            this.AuthService.usuarioEmail,
+            this.especialista?.nombre+' '+this.especialista.apellido,
+            this.especialista?.mail,
+            this.especialidad,
+            'pendienteAceptacion',
+            '',
+            '',
+            '',
+            undefined
+          );
+    
+          this.turnoSeleccionado=nuevoTurno;
+          console.log(this.turnoSeleccionado.toJson());
+        }
+      }
+    })
+
+   
   }
 
   confirmarTurno(){
     if(this.turnoSeleccionado){
+      this.turnoSeleccionado.atencion= {
+        altura: "",        peso: "",
+        temperatura: "",
+        presionSistole: "",
+        presionDiastole: "",
+        datosDinamicos: [],
+      };
       this.TurnosService.guardar(this.turnoSeleccionado.toJson())
       .then(()=>{
         swal.fire({
@@ -139,40 +162,27 @@ export class GrillaTurnosComponent {
     }
   }
 
-  fechasProximos15Dias: string[] = [];
-
-  cambiarFechaSiguiente() {
-    // Genera un array de fechas para los próximos 15 días
-    this.fechasProximos15Dias = this.generarFechasProximos15Dias();
-
-    // Encuentra la posición actual de la fecha seleccionada en el array
-    const index = this.fechasProximos15Dias.indexOf(this.fechaSeleccionada);
-
-    // Si la fecha actual no está en el array o es la última fecha, selecciona la primera fecha en el array
-    if (index === -1 || index === this.fechasProximos15Dias.length - 1) {
-      this.fechaSeleccionada = this.fechasProximos15Dias[0];
-    } else {
-      // Si no, selecciona la siguiente fecha en el array
-      this.fechaSeleccionada = this.fechasProximos15Dias[index + 1];
-    }
-  }
-
-  generarFechasProximos15Dias(): string[] {
-    const fechas: string[] = [];
-    const fechaActual = new Date();
-
-    for (let i = 0; i < 15; i++) {
-      const fecha = new Date(fechaActual);
-      fecha.setDate(fechaActual.getDate() + i);
-      fechas.push(
-        fecha.toLocaleDateString('es-AR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        })
-      );
-    }
-
-    return fechas;
-  }
+  // fechasProximos15Dias: string[] = [];
+  // generarFechasProximos15Dias(): string[] {
+  //   const fechas: string[] = [];
+  //   const fechaActual = new Date();
+  
+  //   // Obtenemos la fecha de mañana
+  //   const fechaMañana = new Date(fechaActual.getTime() + (24 * 60 * 60 * 1000));
+  //   console.log(fechaMañana)
+  
+  //   for (let i = 1; i <= 15; i++) {
+  //     fechaMañana.setDate(fechaMañana.getDate() + i);
+  //     fechas.push(
+  //       fechaMañana.toLocaleDateString('es-AR', {
+  //         year: 'numeric',
+  //         month: '2-digit',
+  //         day: '2-digit',
+  //       })
+  //     );
+  //   }
+  
+  //   return fechas;
+  // }
+  
 }

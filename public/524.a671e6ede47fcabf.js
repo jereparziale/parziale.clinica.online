@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunktp_clinica_online=self.webpackChunktp_clinica_online||[]).push([[524],{8524:(o,a,_)=>{_.d(a,{m:()=>i});var s=_(6814),c=_(95),n=_(4946);let i=(()=>{class t{static#_=this.\u0275fac=function(l){return new(l||t)};static#t=this.\u0275mod=n.oAB({type:t});static#n=this.\u0275inj=n.cJS({imports:[s.ez,c.u5]})}return t})()}}]);

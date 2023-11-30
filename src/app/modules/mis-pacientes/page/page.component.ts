@@ -18,6 +18,7 @@ export class PageComponent {
   public pacientesSinDuplicados: string[] = [];
   public pacienteSeleccionado:any;
   public mostrarHistoriaPaciente:boolean=false;
+  public turnos:Turno[]=[]
 
 
   constructor(
@@ -35,6 +36,8 @@ export class PageComponent {
       if (user) {
         this.turnosService.traerPorEspecialista(user.email).subscribe(
           (turnos: Turno[]) => {
+            this.turnos=turnos;
+            console.log(turnos)
             const emailsPacientes = turnos.map(turno => turno.pacienteEmail);
             this.obtenerPacientesPorEmails(emailsPacientes);
           }
@@ -54,6 +57,9 @@ export class PageComponent {
             // Todos los pacientes han sido obtenidos
             console.log(pacientes);
             this.pacientes = [...pacientes]; // Copiar el array para evitar la referencia directa
+            this.pacientes = this.pacientes.filter((paciente, index, array) => {
+              return array.findIndex(item => item.mail === paciente.mail) === index;
+            });
           }
         }
       );
@@ -61,13 +67,6 @@ export class PageComponent {
 
     emailsPacientes.forEach(obtenerPacienteCallback);
   }
-
-  // private actualizarPacientesSinDuplicados() {
-  //   // Actualiza la lógica según la estructura de tu objeto Usuario
-  //   this.pacientesSinDuplicados = this.pacientes.filter((paciente, index, array) => {
-  //     return array.findIndex(item => item.email === paciente.email) === index;
-  //   });
-  // }
 
 
   seleccionarPaciente(elemento:any){

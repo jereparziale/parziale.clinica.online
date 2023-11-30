@@ -1,0 +1,42 @@
+<div class="px-1 py-2 my-2 text-center">
+    <h1 class="display-5 fw-bold">Estadisticas</h1>
+    <div class="col-lg-8 mx-auto">
+      <p class="lead mb-4">
+
+     </p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarLogs()">Listar Logs</button>
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarCantidadTurnosPorEspecialidad()">Listar cantidad turnos por especialidad</button>
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarTurnosPorDia()">Listar turnos por dia</button>
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3" (click)="listarTurnosPorPeriodo()">Listar turnos por periodo y profesional</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="b-example-divider"></div>
+  <ng-container *ngIf="mostrarLogs">
+    <app-listado-logs></app-listado-logs>
+  </ng-container>
+  <ng-container *ngIf="mostrarGraficoEspecialidad">
+    <app-grafico-especialidad>
+    </app-grafico-especialidad>
+  </ng-container>
+  <ng-container *ngIf="mostrarTurnosPorDia">
+    <app-turnos-por-dia>
+    </app-turnos-por-dia>
+  </ng-container>
+  <ng-container *ngIf="mostrarTurnosPorPeriodo">
+    <app-turnos-por-periodo>
+    </app-turnos-por-periodo>
+  </ng-container>
+
+
+  <!-- <ng-container *ngIf="mostrarEspecialistas">
+    <app-listado-usuarios [tipoUsuarioFiltrado]="tipoUsuarioFiltrado"></app-listado-usuarios>
+  </ng-container>
+  <ng-container *ngIf="registrarAdmin">
+    <app-register [usuarioAdmin]=true></app-register>
+  </ng-container>
+  <ng-container *ngIf="mostrarHistoriaClinica">
+    <app-historia-clinica [paciente]="pacienteSeleccionado"></app-historia-clinica>
+  </ng-container> -->

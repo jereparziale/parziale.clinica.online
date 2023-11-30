@@ -1,8 +1,11 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Paciente } from 'src/app/models/usuarios/paciente';
 import { TurnosService } from 'src/app/services/firestore/turnos/turnos.service';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { UsuarioService } from 'src/app/services/firestore/usuarios/usuario.service';
+import { Turno } from 'src/app/models/turno';
+import { EspecialidadService } from 'src/app/services/firestore/especialidad/especialidad.service';
 
 @Component({
   selector: 'app-historia-clinica',
@@ -11,48 +14,93 @@ import html2canvas from 'html2canvas';
 })
 export class HistoriaClinicaComponent implements OnInit {
 
-  constructor(private turnosService:TurnosService) { }
+  constructor(private turnosService:TurnosService,
+    private EspecialidadesService:EspecialidadService) { }
   @Input() paciente?:Paciente;
   @Input() rolUsuario?:string='';
   @ViewChild('historiaClinica', { static: false }) historiaClinica: ElementRef | undefined;
 
 
-  turnos:any[]=[]
+  turnos:Turno[]=[]
+  especialidades:any[]=[]
+  hayTurnos:boolean=false;
+  especialidadSeleccionada:string='';
 
+
+ 
   ngOnInit(): void {
-    if(this.paciente){
+    this.EspecialidadesService.todos().subscribe((res)=>{
+      this.especialidades=res;
+    })
+
+    this.actualizarTurnos();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['paciente'] && !changes['paciente'].firstChange) {
+      // Solo se ejecuta si hay un cambio en el input paciente y no es el primer cambio
+      this.actualizarTurnos();
+    }
+  }
+
+  private actualizarTurnos() {
+    if (this.paciente) {
       this.turnosService.traerPorPaciente(this.paciente.mail)
-      .subscribe((res)=>{
-        this.turnos=res;
-      })
+        .subscribe((res) => {
+          this.turnos = res;
+          console.log(this.turnos);
+        });
+
+
 
     }
   }
 
-  guardarPdf(){
-
+  seleccionarEspecialidad(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.especialidadSeleccionada = select.value;
+    this.generarPDF()
   }
 
   generarPDF() {
-    console.log(this.historiaClinica);
-    if (this.historiaClinica) {
-      const pdf = new jsPDF();
+    const pdf = new jsPDF();
+    let startY = 30;
 
-      // Obtener el contenido del elemento con id 'historiaClinica'
-      html2canvas(this.historiaClinica.nativeElement).then((canvas) => {
-        const imgData = canvas.toDataURL('../../../../assets/logo_PDF.png');
-        console.log(imgData)
-        // Agregar la imagen capturada al PDF
-        pdf.addImage(imgData, 'PNG', 15, 40, 180, 160);
+  
+    if (this.paciente) {
+      pdf.addImage('../../../assets/logo_PDF.png', 'PNG', 10, 10, 10, 10);
+      pdf.text('Historia Clínica', 80, 25);
+      pdf.text('Fecha de emisión: ' + new Date().toLocaleDateString(), 15, 30);
+      pdf.text('Nombre y Apellido: ' + this.paciente.nombre + ' ' + this.paciente.apellido, 15, 40);
+      startY = 70;
+      this.turnos.forEach(element => {
 
-        // Otros elementos del PDF
-        pdf.text('Clinica Online', 80, 25);
-        pdf.text('Fecha de emisión: ' + new Date().toLocaleDateString(), 15, 220);
+        if(element.especialidad===this.especialidadSeleccionada){
+          this.hayTurnos=true;
+          if (startY + 20 > pdf.internal.pageSize.height) {
+            pdf.addPage();
+            startY = 30;
+          }
+    
+          pdf.text('Fecha del turno: ' + element.dia + ' ' + element.horario, 15, startY);
+          pdf.text('Estado: ' + element.estado, 15, startY + 10);
+          pdf.text('Especialidad: ' + element.especialidad, 15, startY + 20);
+    
+          if (element.atencion?.altura) {
+            pdf.text('Presion: ' + element.atencion.presionSistole + '/' + element.atencion.presionDiastole, 15, startY + 30);
+            pdf.text('Temperatura (C°): ' + element.atencion.temperatura, 15, startY + 40);
+            pdf.text('Altura (m): ' + element.atencion.altura, 15, startY + 50);
+            pdf.text('Peso (Kg): ' + element.atencion.peso, 15, startY + 60);
+          }
+          startY += 30
+          startY += 70;
+        }
 
-        // Guardar o visualizar el PDF
-        pdf.save(`${this.paciente?.apellido}_historia_clinica.pdf`);
-        // window.open(pdf.output('bloburl'), '_blank');
+       
       });
+      if(this.hayTurnos){
+        pdf.save(`${this.paciente.apellido}_historia_clinica.pdf`);
+      }
     }
   }
 

@@ -1,0 +1,22 @@
+<section class="container col-8">
+    <h2 class="py-2">Seleccione el dia a filtrar</h2>
+    <form class="row">
+      <label for="date" class="col-1 col-form-label">Dia</label>
+      <div class="col-7">
+        <div class="input-group date" id="datepicker">
+          <input type="date" class="form-control" id="date" (change)="buscarTurnos($event)"/>
+        </div>
+        <ng-container *ngIf="fechaSeleccionada!=='' && cantidadTurnos===0">
+            <div class="alert alert-warning mt-3">
+              No hay turnos asignados/finalizados en la fecha seleccionada.
+            </div>
+          </ng-container>
+          <ng-container *ngIf="fechaSeleccionada!=='' && cantidadTurnos!==0">
+            <div class="alert alert-success mt-3" role="alert">
+              La cantidad de turnos en la fecha seleccionada fue de {{cantidadTurnos}}.
+            </div>
+          </ng-container>
+      </div>
+    
+    </form>
+  </section> 

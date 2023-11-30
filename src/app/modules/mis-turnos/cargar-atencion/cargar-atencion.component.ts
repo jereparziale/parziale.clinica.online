@@ -28,6 +28,7 @@ export class CargarAtencionComponent implements OnInit {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
+    console.log('inice');
     this.historialForm = this.fb.group({
       altura: [10, [Validators.required,Validators.max(250), Validators.min(10)]],
       peso: [1, [Validators.required,Validators.max(500), Validators.min(1)]],

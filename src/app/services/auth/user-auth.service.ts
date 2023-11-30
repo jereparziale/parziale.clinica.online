@@ -1,6 +1,6 @@
 import { Injectable, OnInit, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, onAuthStateChanged,signInWithEmailAndPassword,sendEmailVerification } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged,signInWithEmailAndPassword,sendEmailVerification, Unsubscribe } from '@angular/fire/auth';
+import { Observable, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +9,7 @@ export class UserAuthService implements OnInit{
   private auth: Auth = inject(Auth);
   usuarioAutenticado: boolean = false;
   usuarioEmail: any = '';
+   unsubscribe:Subscription | Unsubscribe | undefined
   constructor() {
   }
   ngOnInit(): void {
@@ -16,15 +17,7 @@ export class UserAuthService implements OnInit{
     this.usuarioEmail=this.auth.currentUser?.email;
   }
 
-  // retornarMailLogeado():string{
-  //   if(this.auth.currentUser?.email){
-  //     console.log(this.auth.currentUser);
-  //     return this.auth.currentUser.email
-  //   }
-  //   console.log(this.auth.currentUser);
 
-  //   return '';
-  // }
 
   isLoggedIn(): boolean {
     this.usuarioEmail=this.auth.currentUser?.email;
@@ -33,7 +26,7 @@ export class UserAuthService implements OnInit{
 
   estadoLogObservable(): Observable<any> {
     return new Observable((observer) => {
-      const unsubscribe = onAuthStateChanged(this.auth, (user) => {
+      this.unsubscribe = onAuthStateChanged(this.auth, (user) => {
         if (user) {
           this.usuarioAutenticado = true;
           this.usuarioEmail = user.email;
@@ -44,12 +37,22 @@ export class UserAuthService implements OnInit{
           observer.next(null);
         }
       });
-  
-      return () => {
-        unsubscribe();
-      };
     });
   }
+
+  logout() {
+    return this.auth.signOut()
+    .then(() => {
+      // Éxito al cerrar sesión
+      console.log(this.auth)
+      this.usuarioAutenticado = false;
+      this.usuarioEmail = null;
+      
+    })
+    .catch((error) => {
+      // Manejar cualquier error al cerrar sesión
+      console.error('Error al cerrar sesión:', error);
+    });  }
 
 
   registro({ email, password }: any) {
@@ -78,10 +81,8 @@ export class UserAuthService implements OnInit{
     return signInWithEmailAndPassword(this.auth,email, password);
   }
 
-  logout() {
-    return this.auth.signOut();
-  }
-
+  
+ 
   enviarEmailVerificacion() {
     const user = this.auth.currentUser;
     if (user) {

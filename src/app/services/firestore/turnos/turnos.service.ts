@@ -45,10 +45,10 @@ traerUno(idTurno: string): Observable<any> {
   );
   return collectionData(consulta);
 }
-traerPorPaciente(pacienteEmail: string): Observable<any> {
+traerPorFecha(fecha: string): Observable<any> {
   const consulta = query(
     this.instanciaFirestore,
-    where('pacienteEmail', '==', pacienteEmail)
+    where('dia', '==', fecha)
   );
   return collectionData(consulta);
 }
@@ -59,6 +59,48 @@ traerPorEspecialista(especialistaEmail: string): Observable<any> {
   );
   return collectionData(consulta);
 }
+traerTurnosPorFechaRango(especialistaEmail: string,fechaInicio: string, fechaFin: string): Observable<any> {
+  const consulta = query(
+    this.instanciaFirestore,
+    where('dia', '>=', fechaInicio),
+    where('dia', '<=', fechaFin),
+    where('especialistaEmail', '==', especialistaEmail),
+  );
+  return collectionData(consulta);
+}
+traerTurnosFinalizadosPorFechaRango(especialistaEmail: string,fechaInicio: string, fechaFin: string): Observable<any> {
+  const consulta = query(
+    this.instanciaFirestore,
+    where('dia', '>=', fechaInicio),
+    where('dia', '<=', fechaFin),
+    where('estado', '==', 'realizado'),
+    where('especialistaEmail', '==', especialistaEmail),
+  );
+  return collectionData(consulta);
+}
+traerPorPaciente(pacienteEmail: string): Observable<any> {
+  const consulta = query(
+    this.instanciaFirestore,
+    where('pacienteEmail', '==', pacienteEmail)
+  );
+  return collectionData(consulta);
+}
+traerPorDosCampos(campo1: string, valor1:string,campo2: string, valor2:string): Observable<any> {
+  const consulta = query(
+    this.instanciaFirestore,
+    where(campo1, '==', valor1),
+    where(campo2, '==', valor2) 
+  );
+  return collectionData(consulta);
+}
+traerPorUnCampo(campo1: string, valor1:string): Observable<any> {
+  const consulta = query(
+    this.instanciaFirestore,
+    where(campo1, '==', valor1),
+  );
+  return collectionData(consulta);
+}
+
 
 traerPorPacienteYEspecialidad(pacienteEmail: string, especialidad: string): Observable<any> {
   const consulta = query(

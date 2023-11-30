@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Paciente } from 'src/app/models/usuarios/paciente';
+import { TurnosService } from 'src/app/services/firestore/turnos/turnos.service';
 import { UsuarioService } from 'src/app/services/firestore/usuarios/usuario.service';
 import swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
@@ -11,13 +12,12 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./listado-usuarios.component.scss']
 })
 export class ListadoUsuariosComponent implements OnInit{
-  constructor(private UsuarioService:UsuarioService) { }
+  constructor(private UsuarioService:UsuarioService,
+    private TurnosService: TurnosService) { }
+    public turnos:any[]=[];
   public usuarios: any[]= [];
   public usuarioSeleccionado:any;
   public pacienteSeleccionado:Paciente | undefined;
-  public propiedadesComunes: string[]= ['nombre','apellido','edad','dni','tipoUsuario','mail'];
-  public propiedadesPaciente: string[] = [...this.propiedadesComunes, 'obraSocial'];
-  public propiedadesEspecialista: string[] = [...this.propiedadesComunes, 'accesoConcedido','especialidades','disponibilidadPorEspecialidad'];
   @Output() retornarPaciente = new EventEmitter<Paciente>();
 
   @Input()
@@ -36,12 +36,25 @@ export class ListadoUsuariosComponent implements OnInit{
 
   }
 
-  exportarExcel() {
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.usuarios);
+
+  exportarExcel(){
+    // Filtra los campos que deseas mostrar en el Excel
+    const turnosFiltrados = this.usuarios.map((usuario: any) => {
+      return {
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        tipoUsuario: usuario.tipoUsuario,
+        edad: usuario.edad,
+        dni: usuario.dni,
+        mail: usuario.mail,
+      };
+    });
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(turnosFiltrados);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
     XLSX.writeFile(wb, 'usuarios.xlsx');
-  }
+}
+
 
   
 
@@ -50,9 +63,42 @@ export class ListadoUsuariosComponent implements OnInit{
   }
   seleccionarPaciente(usuario:any){
     this.pacienteSeleccionado=usuario;
+    if(this.pacienteSeleccionado){
+      this.TurnosService.traerPorPaciente(this.pacienteSeleccionado?.mail)
+      .subscribe((res) => {
+        this.turnos=res;
+      })
     this.retornarPaciente.emit(this.pacienteSeleccionado);
 
   }
+}
+
+// En tu componente
+irAEtiqueta() {
+  const etiqueta = document.getElementById('historia');
+  if (etiqueta) {
+    etiqueta.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+
+  descargarExcelTurnos(){
+        // Filtra los campos que deseas mostrar en el Excel
+        const turnosFiltrados = this.turnos.map((turno: any) => {
+          return {
+            dia: turno.dia,
+            horario: turno.horario,
+            especialistaEmail: turno.especialistaEmail,
+            especialidad: turno.especialidad,
+            estado: turno.estado,
+          };
+        });
+        const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(turnosFiltrados);
+        const wb: XLSX.WorkBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'turnosPorUsuario');
+        XLSX.writeFile(wb, 'turnosPorUsuario.xlsx');
+    }
+
   darAcceso(){
     if(this.usuarioSeleccionado.accesoConcedido==false){
       this.UsuarioService.darAcceso(this.usuarioSeleccionado.mail)

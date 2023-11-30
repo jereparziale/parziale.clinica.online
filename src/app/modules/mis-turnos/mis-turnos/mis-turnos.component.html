@@ -1,10 +1,10 @@
 <!-- En tu componente HTML -->
-<div class="modal fade" id="modalConfirmarTurno" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="modalConfirmarTurnoLabel" aria-hidden="true">
+<div class="modal fade" id="modalGuardarComentario" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="modalGuardarComentario" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalConfirmarTurnoLabel">Modificar Turno</h5>
+                <h5 class="modal-title" id="modalGuardarComentario">Comentario del rechazo/cancelacion del Turno</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -43,6 +43,27 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalVerReseña" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="modalVerReseña" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalVerReseña">Ver Reseña Del Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating">
+                    <textarea class="form-control" readonly id="floatingTextarea"
+                        [value]="turnoSeleccionado?.encuesta"></textarea>
+                    <label for="floatingTextarea">Reseña</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalCalificarAtencion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="modalCalificarAtencion" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered">
@@ -65,45 +86,99 @@
         </div>
     </div>
 </div>
-<ng-container *ngIf="!mostrarCargaAtencion">
-
+<ng-container *ngIf="mostrarCargaAtencion">
+    <app-cargar-atencion [idTurnoInput]="turnoSeleccionado?.idTurno"
+        (volverMisTurnos)="ocultarCargaAtencion($event)"></app-cargar-atencion>
+</ng-container>
+<ng-container *ngIf="turnosArray">
     <div class="container d-flex justify-content-between align-items-center justify-content-center flex-wrap">
-        <div *ngIf="turnosArray.length===0" class="alert alert-warning mt-3">
-            No posee turnos asignados para la opcion seleccionada.
-        </div>
-        <div class="card" style="width: 20rem;" [ngClass]="getEstadoClass(turno.estado)"
-            *ngFor="let turno of turnosArray">
+        <div class="card mt-4" *ngFor="let turno of turnosArray" [ngClass]="getEstadoClass(turno.estado)">
+            <div class="card-header">
+                Turno del {{turno.dia}}
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Día: {{ turno.dia }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Horario: {{ turno.horario }}</h6>
-                <p class="bold mb-2">Estado: {{turno.estado}}</p>
-                <p>Especialidad {{turno.especialidad}}</p>
-                <p>Paciente: {{ turno.pacienteEmail }}</p>
+                <div class="list-group">
+                    <li class="list-group-item list-group-item-action">
+                        <strong>Paciente:</strong> {{turno.nombrePaciente}}
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <strong>Especialista:</strong> {{turno.nombreEspecialista}}
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <strong>Estado:</strong> {{turno.estado}}
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <strong>Especialidad:</strong> {{turno.especialidad}}
+                    </li>
+                    <li class="list-group-item list-group-item-action">
+                        <strong>Horario:</strong> {{turno.horario}}
+                    </li>
+                </div>
+                <ng-container *ngIf="turno.atencion && turno.atencion.presionSistole">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        Ver Datos Atencion </button>
+                    <div class="collapse" id="collapseExample">
+                        <div class="list-group">
+                            <li class="list-group-item list-group-item-action active">
+                                <strong>Datos de la consulta:</strong>
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                <strong>Presión sistole:</strong> {{turno.atencion.presionSistole}}
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                <strong>Presión diastole:</strong> {{turno.atencion.presionDiastole}}
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                <strong>Temperatura:</strong> {{turno.atencion.temperatura}}
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                <strong>Peso:</strong> {{turno.atencion.peso}}
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                <strong>Altura:</strong> {{turno.atencion.altura}}
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                <strong>Datos dinámicos:</strong>
+                                <ul class="list-group">
+                                    <li class="list-group-item" *ngFor="let dato of turno.atencion.datosDinamicos">
+                                        {{dato.clave}}: {{dato.valor}}
+                                    </li>
+                                </ul>
+                            </li>
+                        </div>
+                    </div>
+                </ng-container>
                 <ng-container
                     *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'rechazado' && turno.estado !== 'cancelado'">
                     <button type="button" class="btn btn-danger" (click)="cancelarTurno(turno)" data-bs-toggle="modal"
-                        data-bs-target="#modalConfirmarTurno">Cancelar</button>
+                        data-bs-target="#modalGuardarComentario">Cancelar</button>
                 </ng-container>
                 <ng-container *ngIf="rolUsuario==='especialista'">
                     <ng-container
-                        *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'cancelado'">
+                        *ngIf="turno.estado !== 'aceptado' && turno.estado !== 'realizado' && turno.estado !== 'cancelado' && turno.estado !== 'rechazado'">
                         <button type="button" class="btn btn-warning" (click)="rechazarTurno(turno)"
-                            data-bs-toggle="modal" data-bs-target="#modalConfirmarTurno">Rechazar</button>
+                            data-bs-toggle="modal" data-bs-target="#modalGuardarComentario">Rechazar</button>
                     </ng-container>
                     <ng-container
                         *ngIf="turno.estado !== 'realizado' && turno.estado !== 'cancelado' && turno.estado !== 'rechazado' && turno.estado !== 'aceptado'">
                         <button type="button" class="btn btn-success" (click)="aceptarTurno(turno)">Aceptar</button>
                     </ng-container>
                     <ng-container *ngIf="turno.estado === 'aceptado'">
-                        <button type="button" class="btn btn-primary" (click)="finalizarTurno(turno)">Finalizar</button>
+                        <button type="button" class="btn btn-primary" (click)="finalizarTurno(turno)">Finalizar y Cargar
+                            Historia</button>
                     </ng-container>
                 </ng-container>
 
-                <ng-container
-                    *ngIf="turno.estado === 'realizado' || turno.estado === 'rechazado' || turno.estado === 'cancelado' ">
+                <ng-container *ngIf="turno.estado === 'rechazado' || turno.estado === 'cancelado' ">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#modalVerComentario" (click)="verComentario(turno)">Ver
-                        Comentario/Reseña</button>
+                    data-bs-target="#modalVerComentario" (click)="verComentario(turno)">Ver
+                    Comentario (Cancelacion/Rechazo)</button>
+                </ng-container>
+                <ng-container *ngIf="turno.estado === 'realizado' && turno.encuesta.length>0">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#modalVerReseña" (click)="calificarAtencion(turno)">Ver Reseña Del
+                        Paciente</button>
                 </ng-container>
                 <ng-container *ngIf="rolUsuario==='paciente'">
                     <ng-container *ngIf="turno.estado === 'realizado' && turno.encuesta.length===0">
@@ -112,13 +187,6 @@
                             Atencion</button>
                     </ng-container>
                 </ng-container>
-
-
             </div>
         </div>
-    </div>
-</ng-container>
-<ng-container *ngIf="mostrarCargaAtencion">
-    <app-cargar-atencion [idTurnoInput]="turnoSeleccionado?.idTurno"
-        (volverMisTurnos)="ocultarCargaAtencion($event)"></app-cargar-atencion>
-</ng-container>
+    

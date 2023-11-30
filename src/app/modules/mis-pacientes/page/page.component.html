@@ -4,12 +4,37 @@
             <h3 class="display-6">Seleccione el paciente a buscar historia medica</h3>
 
             <div *ngIf="pacientes.length > 0" class="list-group list-group-flush ">
-                <div *ngFor="let elemento of pacientes"
-                    class="list-group-item list-group-item-action list-group-item-light" (click)="seleccionarPaciente(elemento);">
-                    {{elemento.nombre+' '+elemento.apellido+' DNI: '+elemento.dni}}
+
+
+                <div class="card mt-4" *ngFor="let elemento of pacientes">
+                    <div class="card-header">
+                        {{elemento.nombre+' '+elemento.apellido+' DNI: '+elemento.dni}}
+                    </div>
+                    <div class="card-header">
+                        Turnos Recientes 
+                    </div>
+                    <div class="card-body">
+                        <div *ngFor="let turno of turnos">
+                            <ng-container *ngIf="turno.pacienteEmail===elemento.mail">
+                                <p>
+                                    {{turno.dia+' '+turno.horario}}
+                                </p>
+                                <p>
+                                    {{turno.estado}}
+                                </p>
+                            </ng-container>
+                        </div>
+                   
+
+                        <button type="button" class="btn btn-outline-primary"
+                            (click)="seleccionarPaciente(elemento)">Ver Historia
+                            Clinica</button>
+                    </div>
                 </div>
             </div>
-    
+
+
+
             <!-- Mensaje si no hay resultados -->
             <div *ngIf="pacientes.length === 0" class="alert alert-warning mt-3">
                 Aun no atendio ningun paciente.
@@ -18,6 +43,6 @@
         <ng-container *ngIf="mostrarHistoriaPaciente">
             <app-historia-clinica [paciente]="pacienteSeleccionado"></app-historia-clinica>
         </ng-container>
-      
+
     </div>
 </div>

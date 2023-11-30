@@ -19,7 +19,7 @@ export class AccesosRapidosComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.ImagenesService.getImagen('imagesUsuarios',this.usuarioEmail,'1')
+    this.ImagenesService.getImagen('imagesUsuarios',this.usuarioEmail,'_1')
     .then((res)=>{
       this.urlImagen=res;
     })
