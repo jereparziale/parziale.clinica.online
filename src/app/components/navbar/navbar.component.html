@@ -4,27 +4,27 @@
   </a>
 
   <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-    <li><a href="#" class="nav-link px-2 link-secondary">Inicio</a></li>
+    <li><a href="#" class="nav-link px-2 link-secondary" clicResaltarFondo>Inicio</a></li>
     <ng-container *ngIf="rolUsuario==='admin'">
-      <li><a (click)="usuariosAdmin()" class="nav-link px-2 link-dark">Usuarios</a></li>
+      <li><a appClicResaltarFondo appHoverFuente (click)="usuariosAdmin()" class="nav-link px-2 link-dark" >Usuarios</a></li>
     </ng-container>
   <ng-container *ngIf="rolUsuario!=='admin' && rolUsuario!==''">
-    <li><a (click)="misTurnos()" class="nav-link px-2 link-dark">Mis Turnos</a></li>
+    <li><a appClicResaltarFondo appHoverFuente (click)="misTurnos()" class="nav-link px-2 link-dark" clicResaltarFondo>Mis Turnos</a></li>
   </ng-container>
  
     <ng-container *ngIf="rolUsuario==='paciente'">
-      <li><a (click)="turnos()" class="nav-link px-2 link-dark">Solicitar Turno</a></li>
+      <li><a appClicResaltarFondo appHoverFuente (click)="turnos()" class="nav-link px-2 link-dark" clicResaltarFondo>Solicitar Turno</a></li>
     </ng-container>
 
     <ng-container *ngIf="rolUsuario!==''">
-      <li><a class="nav-link px-2 link-dark" (click)="miPerfil()">Mi Perfil</a></li>
+      <li><a appClicResaltarFondo appHoverFuente class="nav-link px-2 link-dark" (click)="miPerfil()" clicResaltarFondo>Mi Perfil</a></li>
     </ng-container>
 
     <ng-container *ngIf="rolUsuario==='especialista'">
-      <li><a class="nav-link px-2 link-dark" (click)="misPacientes()">Pacientes</a></li>
+      <li><a appClicResaltarFondo appHoverFuente class="nav-link px-2 link-dark" (click)="misPacientes()" clicResaltarFondo>Pacientes</a></li>
     </ng-container>
     <ng-container *ngIf="rolUsuario==='admin'">
-      <li><a class="nav-link px-2 link-dark" (click)="irEstadisticas()">Estadisticas</a></li>
+      <li><a appClicResaltarFondo appHoverFuente class="nav-link px-2 link-dark" (click)="irEstadisticas()" clicResaltarFondo>Estadisticas</a></li>
     </ng-container>
     <li><a class="nav-link px-2 link-dark disabled">{{usuarioEmail}}</a></li>
   </ul>

@@ -13,7 +13,9 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ClicResaltarFondoDirective } from './directives/clic-resaltar-fondo.directive';
+import { ClicResaltarFondoDirective } from 'src/app/directives/clic-resaltar-fondo.directive';
+import { HoverFuenteDirective } from './directives/hover-fuente.directive';
+
 
 
 @NgModule({
@@ -23,6 +25,7 @@ import { ClicResaltarFondoDirective } from './directives/clic-resaltar-fondo.dir
     FooterComponent,
     HomeComponent,
     ClicResaltarFondoDirective,
+    HoverFuenteDirective
   ],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),
